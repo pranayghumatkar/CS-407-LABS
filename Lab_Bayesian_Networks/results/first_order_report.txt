@@ -1,0 +1,100 @@
+======================================================================
+FIRST-ORDER AUTOREGRESSIVE LANGUAGE MODEL  (P(X_t | X_{t-1}))
+Pranay Ghumatkar  |  2024A3PS0328G
+======================================================================
+
+--- Conditional probability tables for selected contexts ---
+
+P(next | 'the'):
+    P('cat' | 'the') = 0.2500
+    P('dog' | 'the') = 0.2500
+    P('mat' | 'the') = 0.1667
+    P('rug' | 'the') = 0.1667
+    P('park' | 'the') = 0.1667
+
+P(next | 'cat'):
+    P('sat' | 'cat') = 0.6667
+    P('ran' | 'cat') = 0.3333
+
+P(next | 'dog'):
+    P('sat' | 'dog') = 0.6667
+    P('ran' | 'dog') = 0.3333
+
+P(next | 'sat'):
+    P('on' | 'sat') = 1.0000
+
+P(next | 'ran'):
+    P('to' | 'ran') = 1.0000
+
+P(next | 'on'):
+    P('the' | 'on') = 1.0000
+
+P(next | 'mat'):
+    P('<END>' | 'mat') = 1.0000
+
+P(next | 'rug'):
+    P('<END>' | 'rug') = 1.0000
+
+--- Normalisation test (rows must sum to 1.0) ---
+    <START>  sum = 1.000000   [OK]
+    cat      sum = 1.000000   [OK]
+    dog      sum = 1.000000   [OK]
+    mat      sum = 1.000000   [OK]
+    on       sum = 1.000000   [OK]
+    park     sum = 1.000000   [OK]
+    ran      sum = 1.000000   [OK]
+    rug      sum = 1.000000   [OK]
+    sat      sum = 1.000000   [OK]
+    the      sum = 1.000000   [OK]
+    to       sum = 1.000000   [OK]
+
+--- Argmax predictions for selected contexts ---
+    arg max P(w | 'the') = 'cat'
+    arg max P(w | 'cat') = 'sat'
+    arg max P(w | 'dog') = 'sat'
+    arg max P(w | 'sat') = 'on'
+    arg max P(w | 'ran') = 'to'
+    arg max P(w | 'on') = 'the'
+    arg max P(w | 'mat') = '<END>'
+    arg max P(w | 'rug') = '<END>'
+
+--- 20 generated sentences (sampling, seed=1234) ---
+     1. the rug
+     2. the park
+     3. the cat ran to the dog sat on the cat sat on the rug
+     4. the rug
+     5. the cat sat on the dog sat on the park
+     6. the cat sat on the rug
+     7. the dog sat on the park
+     8. the cat sat on the dog sat on the cat ran to the mat
+     9. the rug
+    10. the dog ran to the dog sat on the rug
+    11. the dog sat on the dog sat on the cat ran to the park
+    12. the rug
+    13. the cat sat on the cat ran to the park
+    14. the cat sat on the dog ran to the mat
+    15. the dog sat on the dog sat on the rug
+    16. the dog ran to the mat
+    17. the dog ran to the rug
+    18. the dog sat on the rug
+    19. the dog ran to the mat
+    20. the mat
+
+--- Mode A: greedy generation (5 sentences) ---
+    1. the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat
+    2. the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat
+    3. the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat
+    4. the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat
+    5. the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat sat on the cat
+
+--- Mode B: sampling generation (5 sentences) ---
+    1. the cat sat on the mat
+    2. the rug
+    3. the rug
+    4. the park
+    5. the dog sat on the mat
+
+--- Model statistics ---
+    distinct non-zero parameters : 17
+    observed context rows        : 11
+    vocabulary size              : 12

@@ -1,0 +1,23 @@
+CS-407 Lab - Generated sentences (first-order)
+Mode: sampling from P(X_t | X_{t-1}), seed = 1234
+
+ 1. the rug
+ 2. the park
+ 3. the cat ran to the dog sat on the cat sat on the rug
+ 4. the rug
+ 5. the cat sat on the dog sat on the park
+ 6. the cat sat on the rug
+ 7. the dog sat on the park
+ 8. the cat sat on the dog sat on the cat ran to the mat
+ 9. the rug
+10. the dog ran to the dog sat on the rug
+11. the dog sat on the dog sat on the cat ran to the park
+12. the rug
+13. the cat sat on the cat ran to the park
+14. the cat sat on the dog ran to the mat
+15. the dog sat on the dog sat on the rug
+16. the dog ran to the mat
+17. the dog ran to the rug
+18. the dog sat on the rug
+19. the dog ran to the mat
+20. the mat

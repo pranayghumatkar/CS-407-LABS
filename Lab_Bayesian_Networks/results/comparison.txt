@@ -1,0 +1,11 @@
+CS-407 Lab - First-order vs second-order comparison
+Student: Pranay Ghumatkar | 2024A3PS0328G
+
+Metric                                       1st order     2nd order
+--------------------------------------------------------------------
+Distinct non-zero parameters                        17            19
+Observed context rows                               11            15
+Possible contexts (|V|^2)                            -           144
+Unseen possible contexts                             -           129
+Observed rows containing a zero                     11            15
+Vocabulary size                                     12            12
