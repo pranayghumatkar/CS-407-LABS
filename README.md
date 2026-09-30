@@ -67,16 +67,19 @@ Requires only the Python standard library (developed with Python 3.14).
 - **First-order model:** 17 non-zero parameters over 11 context rows. Row for
   `the`: `cat 0.25, dog 0.25, mat 0.1667, rug 0.1667, park 0.1667`.
 - **Second-order model:** 19 non-zero parameters over 15 observed context rows,
-  out of 144 possible `|V|²` contexts (129 unseen) — showing the data-sparsity
-  cost of more context.
+  out of 121 possible contexts (106 unseen) — showing the data-sparsity cost of
+  more context.
 - **Normalisation test:** every CPT row of both models sums to `1.000000`.
 - **Greedy vs sampling:** greedy generation is deterministic and gets stuck in
   the cycle `the cat sat on the cat sat on …`; sampling produces varied,
   well-formed sentences.
-- **First vs second order:** the second-order model reproduces training-like
-  sentences almost exactly, whereas the first-order model produces some
-  ungrammatical ones (e.g. `the dog sat on the park`), illustrating the
-  bias–variance trade-off.
+- **First vs second order:** in 1000 samples the first-order model produces 175
+distinct sentences (169 novel), while the second-order model produces just 6
+(0 novel) and reproduces a training sentence verbatim 100% of the time. The
+first-order model also produces some ungrammatical sentences (e.g. `the dog sat
+on the park`), illustrating the bias–variance trade-off.
+- The worksheet `BN_lab.pdf` is included in `Lab_Bayesian_Networks/` for
+  reference.
 
 ### A note on the dataset
 

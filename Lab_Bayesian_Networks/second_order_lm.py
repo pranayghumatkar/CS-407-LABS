@@ -154,9 +154,14 @@ class SecondOrderLanguageModel:
     def n_observed_contexts(self):
         return len(self.probabilities)
 
+    def context_vocabulary(self):
+        """Tokens that can occur in a context.  <END> is terminal, so it can
+        never precede another token and is excluded, giving |V| - 1 tokens."""
+        return sorted(w for w in self.vocabulary if w != END)
+
     def n_possible_contexts(self):
-        """All bigram contexts that could in principle occur."""
-        return len(self.vocabulary) ** 2
+        """All bigram contexts that can occur in principle: (|V| - 1) ^ 2."""
+        return len(self.context_vocabulary()) ** 2
 
     def zero_probability_contexts(self):
         """Observed contexts whose CPT row contains at least one zero."""
@@ -170,13 +175,7 @@ class SecondOrderLanguageModel:
 
     def n_unseen_possible_contexts(self):
         """Number of bigram contexts possible in principle but never observed."""
-        observed = {c for c in self.probabilities}
-        count = 0
-        for a in self.vocabulary:
-            for b in self.vocabulary:
-                if (a, b) not in observed and (a, b) not in self.trigram_counts:
-                    count += 1
-        return count
+        return self.n_possible_contexts() - self.n_observed_contexts()
 
 
 def main():

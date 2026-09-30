@@ -160,6 +160,11 @@ class FirstOrderLanguageModel:
         """Number of non-zero parameters in the CPT."""
         return sum(len(row) for row in self.probabilities.values())
 
+    def context_vocabulary(self):
+        """Tokens that can occur as a context.  <END> is terminal, so it can
+        never precede another token and is excluded."""
+        return sorted(w for w in self.vocabulary if w != END)
+
     def zero_probability_contexts(self):
         """Contexts (rows) that contain at least one structurally absent
         transition, i.e. some vocabulary word with count zero."""

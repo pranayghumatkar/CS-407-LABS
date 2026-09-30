@@ -91,6 +91,6 @@ P(next | ('sat', 'on')):
 --- Model statistics ---
     distinct non-zero parameters     : 19
     observed second-order contexts   : 15
-    possible contexts (|V|^2)        : 144
-    unseen possible contexts         : 129
+    possible contexts (|V|^2)        : 121
+    unseen possible contexts         : 106
     observed rows with a zero entry  : 15

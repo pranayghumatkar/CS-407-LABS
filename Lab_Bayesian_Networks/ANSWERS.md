@@ -264,8 +264,9 @@ of the prefix the model conditions on, the closer it gets to the true
 `P(X_t | X_1..X_{t-1})`.
 
 **Hurts (data sparsity):** the CPT is indexed by the context, so its size grows
-like `|V|^order`. For this corpus, `|V| = 12`, so there are `12² = 144` possible
-second-order contexts, of which only **15** were observed and **129 were never
+like `|V|^order`. For this corpus the context vocabulary has 11 tokens
+(`<END>` can never precede anything), so there are `11² = 121` possible
+second-order contexts, of which only **15** were observed and **106 were never
 seen**. Each unseen context has no reliable estimate, so probabilities must be
 backed off or smoothed; the estimates that *are* observed are based on one or two
 examples. Doubling the context length roughly squares the number of parameters,
