@@ -1,0 +1,33 @@
+======================================================================
+TASK 4, PART C - SYMMETRY EXPERIMENT  (all weights initialised to 0)
+Pranay Ghumatkar  |  2024A3PS0328G
+======================================================================
+
+--- W(1) rows over the first steps ---
+    step 0:  row0 = [0.0, 0.0]   row1 = [0.0, 0.0]
+              ||row0 - row1|| = 0.000e+00
+    step 1:  row0 = [0.0, 0.0]   row1 = [0.0, 0.0]
+              ||row0 - row1|| = 0.000e+00
+    step 2:  row0 = [0.0, 0.0]   row1 = [0.0, 0.0]
+              ||row0 - row1|| = 0.000e+00
+    step 3:  row0 = [0.0, 0.0]   row1 = [0.0, 0.0]
+              ||row0 - row1|| = 0.000e+00
+    step 4:  row0 = [0.0, 0.0]   row1 = [0.0, 0.0]
+              ||row0 - row1|| = 0.000e+00
+
+--- Row gap over training ---
+    ||W(1)[0]-W(1)[1]|| at step 0     : 0.000e+00
+    ||W(1)[0]-W(1)[1]|| at step 100   : 0.000e+00
+    ||W(1)[0]-W(1)[1]|| at final step : 0.000e+00
+    rows remain identical throughout  : True
+
+--- Learning outcome from the symmetric start ---
+    initial loss : 0.693147
+    final loss   : 0.693147  (ln 2 = 0.693147)
+    predictions  : [1, 1, 1, 1]
+    all four correct : False
+
+Because both hidden units start identical and receive the identical
+gradient, gradient descent keeps them identical forever.  The network
+behaves as if it had a single hidden unit, which cannot represent XOR:
+the loss stays at ln(2) and the four predictions never separate.

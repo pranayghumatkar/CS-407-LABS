@@ -1,0 +1,23 @@
+======================================================================
+GRADIENT CHECK - autograd vs central finite differences (float64)
+Pranay Ghumatkar  |  2024A3PS0328G
+======================================================================
+
+    loss at test point : 0.6984537832
+
+    dL/dW(1) from autograd :
+      [0.00046186885093239295, 0.0005475295117292047]
+      [0.0037166937965722596, 0.003925718093476437]
+
+    dL/dW(1) from finite differences (eps = 1e-5) :
+      [0.00046186885427346164, 0.0005475295106194267]
+      [0.00371669379717332, 0.003925718095043607]
+
+    max |autograd - finite difference| : 3.341e-12
+    agreement within 1e-8              : True
+
+    The two independent estimates agree, so backward() is indeed
+    computing dL/dW(1) via the chain rule.  Note that a finite-difference
+    check costs two forward passes per parameter; for a large model it is
+    far more expensive than one backward pass, which is why it is kept
+    only for tiny networks like this one (Reflection Q7).

@@ -12,6 +12,7 @@ answers required by its worksheet.
 | Folder | Topic | Worksheet |
 |---|---|---|
 | [`Lab_Bayesian_Networks/`](Lab_Bayesian_Networks/) | Bayesian Networks and Autoregressive Language Models | Parts I–XV, Questions 1–14 |
+| [`Lab_Neural_Models/`](Lab_Neural_Models/) | Neural Models: Learning, Depth, Activations, and Output Layers | Tasks 1–5, 7 Reflection Questions |
 
 ---
 
@@ -88,3 +89,90 @@ The worksheet's illustrative example uses a five-transition toy corpus giving
 `the` as a context 12 times, so on the real data
 `P(cat|the) = P(dog|the) = 3/12 = 0.25`. Both are correct for their respective
 corpora; the difference is noted in `REFLECTION.md`.
+
+---
+
+## Lab: Neural Models — Learning, Depth, Activations, and Output Layers
+
+Implements a 2→2→1 neural network from scratch in PyTorch — no pretrained
+model — for the XOR problem, and uses it to show why a **nonlinear hidden
+layer** is necessary, how the **backward pass** is exactly the chain rule, why
+**symmetric initialisation** stalls learning, and how the **output layer must
+match the task** (binary sigmoid+BCE vs multiclass softmax+cross-entropy).
+
+**Central idea.** A stack of affine layers with no nonlinearity collapses into a
+single affine map `W'x + b'`, so XOR — which is not linearly separable — is
+unrepresentable no matter how many linear layers are added:
+
+```
+a(ℓ) = W(ℓ)h(ℓ−1) + b(ℓ),   h(ℓ) = f(a(ℓ)),   h(0) = x
+```
+The nonlinearity `f` is what gives the composition real expressive power; the
+task then determines the output activation/loss pairing (`softmax`+cross-entropy
+has logit gradient `p − y`, `sigmoid`+BCE has `σ(z) − y`).
+
+### Deliverables and where to find them
+
+| Worksheet deliverable | File |
+|---|---|
+| Binary XOR experiment (Task 3/4 A/B) | [`Lab_Neural_Models/xor_net.py`](Lab_Neural_Models/xor_net.py) |
+| Symmetry experiment, all-zero init (Task 4 C) | [`Lab_Neural_Models/symmetry_experiment.py`](Lab_Neural_Models/symmetry_experiment.py) |
+| Activation experiment, sigmoid/tanh/ReLU (Task 4 D) | [`Lab_Neural_Models/activation_experiment.py`](Lab_Neural_Models/activation_experiment.py) |
+| Three-class softmax extension (Task 5) | [`Lab_Neural_Models/three_class_net.py`](Lab_Neural_Models/three_class_net.py) |
+| Autograd vs finite-difference gradient check | [`Lab_Neural_Models/gradient_check.py`](Lab_Neural_Models/gradient_check.py) |
+| Answers to Tasks 1–5, Think-About-Its, Reflections 1–7 | [`Lab_Neural_Models/ANSWERS.md`](Lab_Neural_Models/ANSWERS.md) |
+| Reflection on LLM use and validation | [`Lab_Neural_Models/REFLECTION.md`](Lab_Neural_Models/REFLECTION.md) |
+| Program output (results) | [`Lab_Neural_Models/results/`](Lab_Neural_Models/results/) |
+| Invariant tests | [`Lab_Neural_Models/tests/test_neural_models.py`](Lab_Neural_Models/tests/test_neural_models.py) |
+| Worksheet PDF | [`Lab_Neural_Models/neur_models_lab_ex.pdf`](Lab_Neural_Models/neur_models_lab_ex.pdf) |
+
+### How to run
+
+```bash
+cd Lab_Neural_Models
+pip install -r requirements.txt          # CPU-only PyTorch is enough
+
+# Run every experiment and regenerate results/
+python run_all.py
+
+# Run the invariants (also works with pytest)
+python tests/test_neural_models.py
+```
+
+Requires Python 3 and PyTorch (developed with Python 3.14, `torch 2.9.1+cpu`).
+
+### Headline results
+
+- **Binary XOR (2-2-1, sigmoid hidden, `BCEWithLogitsLoss`, Adam lr 0.1, 6000
+  steps, seed 2):** loss falls `0.698454 → 0.000016`; probabilities
+  `[0.000013, 0.999983, 0.999983, 0.000017]` threshold to `[0,1,1,0]` — **all four
+  correct**.
+- **Backprop check:** at initialisation `‖∂L/∂W⁽¹⁾‖ = 0.005453`; autograd agrees
+  with a `float64` central finite-difference estimate to **`3.3e-12`**. The
+  gradient shrinks to `2.6e-7` at convergence.
+- **Activation experiment (seed 2):** all three activations classify 4/4;
+  final losses `0.000016 / 0.000006 / 0.000003` and early `‖∂L/∂W⁽¹⁾‖`
+  `0.005453 / 0.005077 / 0.004868` for sigmoid / tanh / ReLU. The initial mean
+  hidden derivative differs much more (`0.245 / 0.920 / 1.000`), so the
+  composite gradient norm alone does not rank them.
+- **Symmetry (all-zero init):** the two rows of `W⁽¹⁾` stay identical for all
+  6000 steps (`‖row0 − row1‖ = 0`), the units never specialise, and the loss is
+  stuck at `ln 2 = 0.693147` — the network behaves like one linear unit.
+- **Three-class extension (2-2-3, softmax + cross-entropy):** loss
+  `1.069200 → 0.000008`, all four inputs classified correctly, every softmax row
+  sums to 1. Adding `+100` to all logits leaves the stable softmax unchanged
+  (`2.6e-11`) but makes the *naive* softmax `NaN` — why implementations subtract
+  the max logit. Verified that `∂L/∂logits = p − y`.
+- **Tests:** `8/8` pass (`tests/test_neural_models.py`), including the
+  finite-difference agreement, `p − y`, softmax normalisation/shift-invariance,
+  zero-init symmetry, and 4/4 accuracy for all three activations.
+
+### A note on the environment
+
+The lab needs PyTorch. On the machine used to produce `results/`,
+`torch 2.14.1+cpu` failed to import because a Windows Application Control policy
+blocked its `_C` extension (`WinError 4551`); `torch 2.9.1+cpu` imports and runs
+correctly, and is what `requirements.txt` targets. The finite-difference check
+also runs in `float64`: in `float32` the `1e-7` loss resolution divided by the
+step size produces `~1e-4` of roundoff that looks like a gradient disagreement.
+

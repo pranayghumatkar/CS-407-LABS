@@ -1,0 +1,6 @@
+# CS-407 Neural Models lab - dependencies
+# CPU-only PyTorch is sufficient; no GPU is required.
+#   pip install -r requirements.txt
+#   (or, for a smaller CPU-only wheel:)
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.9,<2.15

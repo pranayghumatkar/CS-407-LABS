@@ -1,0 +1,32 @@
+======================================================================
+TASK 3/4 - BINARY XOR, 2-2-1 NETWORK  (sigmoid hidden, BCEWithLogits)
+Pranay Ghumatkar  |  2024A3PS0328G
+======================================================================
+
+--- Part A: basic learning check ---
+    initial loss              : 0.698454
+    final loss                : 0.000016
+    input          P(y=1)     label   target
+    (0,0)          0.000013   0       0
+    (0,1)          0.999983   1       1
+    (1,0)          0.999983   1       1
+    (1,1)          0.000017   0       0
+    all four correct          : True
+
+--- Part B: backpropagation check ---
+    at initialisation:
+      loss                    : 0.698454
+      dL/dW(1) (2x2)          :
+tensor([[0.0005, 0.0005],
+        [0.0037, 0.0039]])
+      ||dL/dW(1)||            : 0.005453
+      dL/dW(2)                : [[-0.029441319406032562, -0.028889348730444908]]
+    after training:
+      loss                    : 0.000016
+      dL/dW(1) (2x2)          :
+tensor([[ 2.0655e-07,  1.5209e-07],
+        [-4.4781e-08, -4.6292e-08]])
+      ||dL/dW(1)||            : 0.00000026
+    The loss uses mean reduction, so dL/dW(1) is the average of the four
+    example-wise gradients: each of the four rows of X contributes its own
+    outer-product term and the sum is divided by 4.
