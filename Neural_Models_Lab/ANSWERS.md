@@ -5,7 +5,7 @@
 
 This document answers the worksheet tasks, the "Think About It" prompts and the
 seven Reflection Questions. Every number quoted below is produced by the code in
-this folder and stored under `results/`.
+this folder and recorded in `results.txt`.
 
 ---
 
@@ -97,7 +97,7 @@ logit gradient reduces to the clean `p − y`.
    threshold to `[0,1,1,0]` (Task 4 Part A).
 3. **The gradient is genuinely the derivative**: at initialisation `‖∂L/∂W⁽¹⁾‖ = 0.005453`,
    and autograd agrees with a central finite-difference estimate to `3.3e-12`
-   (`results/gradient_check.txt`). A fourth check is **repeatability**: re-running
+   (see `results.txt`). A fourth check is **repeatability**: re-running
    with the same seed reproduces the result.
 
 > **Think About It — the hidden units have no targets, so what decides what they compute?**
@@ -126,7 +126,7 @@ logit gradient reduces to the clean `p − y`.
 
 **Field identification before running (as required):**
 
-- **Forward pass** — `xor_net.XORNet.forward`: `a1 = fc1(x)`, `h = act(a1)`,
+- **Forward pass** — `XORNet.forward`: `a1 = fc1(x)`, `h = act(a1)`,
   `z = fc2(h)`.
 - **Scalar loss** — `loss = nn.BCEWithLogitsLoss()(model(X), Y)` in
   `train_xor`.
@@ -170,7 +170,7 @@ logit gradient reduces to the clean `p − y`.
 | P(y=1) at (1,1) | `0.000017` → label 0 (target 0) |
 | All four correct | **True** |
 
-Full output: `results/xor_training.txt`.
+Full output: `results.txt`.
 
 ### Part B — Backpropagation check
 
@@ -182,7 +182,7 @@ At **initialisation** `∂L/∂W⁽¹⁾ = [[0.0005, 0.0005], [0.0037, 0.0039]]`
 `‖∂L/∂W⁽¹⁾‖ = 0.005453`; after training it has shrunk to `‖∂L/∂W⁽¹⁾‖ = 2.6e-7`
 (learning worked, so the loss is no longer sensitive). A central
 finite-difference estimate matches autograd to `3.34e-12`
-(`results/gradient_check.txt`).
+(see `results.txt`).
 
 **Why the gradient is the average of the example-wise gradients.** The default
 `BCEWithLogitsLoss` uses mean reduction, so
@@ -201,7 +201,7 @@ divided by four. Each example contributes an outer product of the form
 | Final loss | `0.693147` (= `ln 2`) |
 | Predictions | `[1, 1, 1, 1]` — **wrong** |
 
-Full output: `results/symmetry_experiment.txt`.
+Full output: `results.txt`.
 
 **Explanation.** With all weights zero, both hidden units compute the same
 value `f(0)` and receive the **same gradient** (they are interchangeable
@@ -266,7 +266,7 @@ cross-entropy (`CrossEntropyLoss`, which fuses log-softmax and NLL). Labels are
    Intuitively, a class that is over-predicted (`p_k > y_k`) gets a positive
    push *down*, a deficient class a negative push *up*.
 
-**Run results** (`results/three_class.txt`):
+**Run results** (in `results.txt`):
 
 | input | class 0 | class 1 | class 2 | predicted | target |
 |---|---|---|---|---|---|
@@ -377,5 +377,38 @@ tested autograd for the rest.
 
 ---
 
-*LLM use and validation are documented in `REFLECTION.md`.*
+---
+
+## Reflection — how the LLM was used and how its output was validated
+
+**Workflow.** Specify → design → ask the LLM → implement → test → reflect. I
+wrote the problem specification and validation criteria (Tasks 1–2) before
+requesting any code, and tested the generated program against that spec.
+
+**Validation.** (1) Read the code against the spec — forward pass, scalar loss,
+`backward()`, optimiser step. (2) Tested invariants — all three activations solve
+XOR, probabilities in `[0,1]`, softmax rows sum to 1, stable softmax is
+shift-invariant while the naive one overflows, zero-init rows stay identical, and
+autograd matches a finite-difference gradient. (3) Ran the experiments and
+measured every number rather than trusting one final loss.
+
+**Errors found and corrected.**
+
+- The first LLM draft used plain SGD and **never solved XOR** (loss stuck at
+  0.477). Fix: Adam, lr 0.1, 6000 steps, seed 2 — engineering settings only.
+- The finite-difference check appeared to disagree at `3.5e-4`; the cause was
+  **float32 roundoff**, not autograd. Running in `float64` brought the two
+  estimates together to `3.3e-12`.
+- The `p − y` test failed by a factor of 4 because `F.cross_entropy` defaults to
+  **mean** reduction; the identity holds for `reduction="sum"`.
+- I initially wrote that ReLU had the largest early gradient; measurement showed
+  the opposite ordering, so the claim was replaced with the honest observation
+  that the gradient norm is a composite and the derivative table shows the
+  mechanism.
+
+**LLM strengths and limits.** Good at boilerplate (modules, the training-loop
+ordering, the fused losses, softmax scaffolding). Not good at judging whether the
+*experiment* worked, at numerical precision, or at checking a formula against the
+reduction actually used. Implementation and model stay separate; keeping them
+separate is what makes validation possible.
 

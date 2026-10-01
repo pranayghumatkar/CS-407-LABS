@@ -98,3 +98,99 @@ P(next | 'rug'):
     distinct non-zero parameters : 17
     observed context rows        : 11
     vocabulary size              : 12
+======================================================================
+SECOND-ORDER AUTOREGRESSIVE LANGUAGE MODEL  (P(X_t | X_{t-2}, X_{t-1}))
+Pranay Ghumatkar  |  2024A3PS0328G
+======================================================================
+
+--- Conditional probability tables for selected contexts ---
+
+P(next | ('the', 'cat')):
+    P('sat' | ('the', 'cat')) = 0.6667
+    P('ran' | ('the', 'cat')) = 0.3333
+
+P(next | ('the', 'dog')):
+    P('sat' | ('the', 'dog')) = 0.6667
+    P('ran' | ('the', 'dog')) = 0.3333
+
+P(next | ('cat', 'sat')):
+    P('on' | ('cat', 'sat')) = 1.0000
+
+P(next | ('dog', 'sat')):
+    P('on' | ('dog', 'sat')) = 1.0000
+
+P(next | ('cat', 'ran')):
+    P('to' | ('cat', 'ran')) = 1.0000
+
+P(next | ('dog', 'ran')):
+    P('to' | ('dog', 'ran')) = 1.0000
+
+P(next | ('on', 'the')):
+    P('mat' | ('on', 'the')) = 0.5000
+    P('rug' | ('on', 'the')) = 0.5000
+
+P(next | ('sat', 'on')):
+    P('the' | ('sat', 'on')) = 1.0000
+
+--- Normalisation test (rows must sum to 1.0) ---
+    ('<START>', '<START>') sum = 1.000000   [OK]
+    ('<START>', 'the')     sum = 1.000000   [OK]
+    ('cat', 'ran')         sum = 1.000000   [OK]
+    ('cat', 'sat')         sum = 1.000000   [OK]
+    ('dog', 'ran')         sum = 1.000000   [OK]
+    ('dog', 'sat')         sum = 1.000000   [OK]
+    ('on', 'the')          sum = 1.000000   [OK]
+    ('ran', 'to')          sum = 1.000000   [OK]
+    ('sat', 'on')          sum = 1.000000   [OK]
+    ('the', 'cat')         sum = 1.000000   [OK]
+    ('the', 'dog')         sum = 1.000000   [OK]
+    ('the', 'mat')         sum = 1.000000   [OK]
+    ('the', 'park')        sum = 1.000000   [OK]
+    ('the', 'rug')         sum = 1.000000   [OK]
+    ('to', 'the')          sum = 1.000000   [OK]
+
+--- Argmax predictions for selected contexts ---
+    arg max P(w | ('the', 'cat')) = 'sat'
+    arg max P(w | ('the', 'dog')) = 'sat'
+    arg max P(w | ('cat', 'sat')) = 'on'
+    arg max P(w | ('dog', 'sat')) = 'on'
+    arg max P(w | ('cat', 'ran')) = 'to'
+    arg max P(w | ('dog', 'ran')) = 'to'
+    arg max P(w | ('on', 'the')) = 'mat'
+    arg max P(w | ('sat', 'on')) = 'the'
+
+--- 20 generated sentences (sampling, seed=1234) ---
+     1. the cat sat on the rug
+     2. the dog sat on the mat
+     3. the cat sat on the mat
+     4. the dog sat on the rug
+     5. the dog sat on the rug
+     6. the cat sat on the mat
+     7. the dog sat on the rug
+     8. the cat sat on the rug
+     9. the dog sat on the mat
+    10. the dog sat on the rug
+    11. the dog ran to the park
+    12. the dog ran to the park
+    13. the dog ran to the park
+    14. the dog ran to the park
+    15. the cat sat on the rug
+    16. the cat sat on the mat
+    17. the dog sat on the rug
+    18. the cat sat on the rug
+    19. the dog sat on the rug
+    20. the cat sat on the rug
+
+--- Greedy generation (5 sentences) ---
+    1. the cat sat on the mat
+    2. the cat sat on the mat
+    3. the cat sat on the mat
+    4. the cat sat on the mat
+    5. the cat sat on the mat
+
+--- Model statistics ---
+    distinct non-zero parameters     : 19
+    observed second-order contexts   : 15
+    possible contexts (|V|^2)        : 121
+    unseen possible contexts         : 106
+    observed rows with a zero entry  : 15

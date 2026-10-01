@@ -1,0 +1,48 @@
+======================================================================
+NEURAL MODELS - single-file submission
+Pranay Ghumatkar  |  2024A3PS0328G
+======================================================================
+
+--- Task 4A: binary XOR (2-2-1, sigmoid, BCEWithLogits) ---
+    initial loss : 0.698454
+    final loss   : 0.000016
+    input     P(y=1)      label  target
+    (0,0)     0.000013    0      0
+    (0,1)     0.999983    1      1
+    (1,0)     0.999983    1      1
+    (1,1)     0.000017    0      0
+    all four correct : True
+
+--- Task 4B: backpropagation check ---
+    dL/dW(1) from autograd : [[0.00046186885093239295, 0.0005475295117292047], [0.0037166937965722596, 0.003925718093476437]]
+    dL/dW(1) from finite differences : [[0.00046186885427346164, 0.0005475295106194267], [0.00371669379717332, 0.003925718095043607]]
+    max |autograd - finite difference| : 3.341e-12  (float64)
+    loss uses mean reduction, so dL/dW(1) is the average of the
+    four example-wise gradients.
+
+--- Task 4C: symmetry experiment (all weights = 0) ---
+    ||W1[0]-W1[1]|| at step 0 / 100 / final : 0.0e+00 / 0.0e+00 / 0.0e+00
+    rows remain identical : True
+    initial / final loss  : 0.693147 / 0.693147  (ln 2 = 0.693147)
+    => the two hidden units never separate, so the network behaves
+       like one linear unit and cannot represent XOR.
+
+--- Task 4D: activation experiment (seed 2) ---
+    activation      final loss    4/4?    early ||dL/dW1||
+    sigmoid           0.000016    True            0.005453
+    tanh              0.000006    True            0.005077
+    relu              0.000003    True            0.004868
+
+--- Task 5: three-class extension (2-2-3, softmax + cross-entropy) ---
+    initial / final loss : 1.069200 / 0.000008
+    W(2) shape (3, 2)   logits per example (4, 3)
+    input     class0     class1     class2   predicted target
+    (0,0)   0.999991   0.000009   0.000000     0       0
+    (0,1)   0.000004   0.999993   0.000003     1       1
+    (1,0)   0.000004   0.999993   0.000003     1       1
+    (1,1)   0.000000   0.000010   0.999990     2       2
+    all four correct : True
+    softmax rows sum to 1 : True
+    naive softmax(z+100) is NaN : True  (exp(100) overflows)
+    max |stable(z) - stable(z+100)| : 2.638e-11
+    => stable softmax subtracts the row max so exp stays in (0,1].

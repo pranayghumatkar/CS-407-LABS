@@ -1,0 +1,32 @@
+======================================================================
+AGENTS LAB - goal-based warehouse vehicle (A* planning)
+Pranay Ghumatkar  |  2024A3PS0328G
+======================================================================
+
+--- Environment ---
+    grid 7x21   start (1, 1)   goal (1, 19)
+#####################
+#S....#............G#
+#.##....##########..#
+#....##.............#
+#.######.###.#.###..#
+#........#..........#
+#####################
+
+--- Goal-based agent run ---
+    goal reached    : True
+    path found      : True
+    path length     : 20
+    states expanded : 22
+
+--- Solution path drawn on the map ---
+#####################
+#S****#************G#
+#.##.***##########..#
+#....##.............#
+#.######.###.#.###..#
+#........#..........#
+#####################
+
+--- Action sequence (first 12 moves) ---
+    Right Right Right Right Down Right Right Up Right Right Right Right ...

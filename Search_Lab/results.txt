@@ -1,0 +1,59 @@
+======================================================================
+SEARCH LAB - warehouse robot  (A* and BFS)
+Pranay Ghumatkar  |  2024A3PS0328G
+======================================================================
+
+    start (1, 1)   goal (7, 15)   grid 9x17
+
+--- Test 1: original warehouse (A*, Manhattan) ---
+    path found      : True
+    path length     : 40
+    states expanded : 63
+#################
+#S****#*********#
+#.###*#*#######*#
+#...#*#*******#*#
+###.#*#######*#*#
+#...#*********#*#
+#.###########.#*#
+#.............#G#
+#################
+
+--- Test 2: trivial case (goal adjacent to start) ---
+    path found      : True   length 1   expanded 1
+
+--- Test 3: no solution (goal enclosed by walls) ---
+    A*  path found  : False  (expected False, no infinite loop)
+    BFS path found  : False
+
+--- Test 4: alternative paths (multiple shortest paths) ---
+    A*  length 4   BFS length 4
+    both shortest   : True
+
+--- Task 5: BFS vs A* on the warehouse ---
+    measure                  BFS    A* (manhattan)
+    --------------------------------------------
+    solution found          True              True
+    path length               40                40
+    states expanded           63                63
+    Both find a shortest path, and here both expand the same number of
+    states: the warehouse is essentially a single winding corridor, so
+    there is little branching for the heuristic to prune.  A*'s advantage
+    appears when the map has many alternative branches.
+
+--- Task 5b: A* vs BFS on an open map (many branches) ---
+    measure                  BFS    A* (manhattan)
+    --------------------------------------------
+    path length               13                13
+    states expanded           49                13
+    Same-length path, but A* expands far fewer states here.
+
+--- Task 6: heuristic investigation on the warehouse ---
+    heuristic            found    length    expanded
+    manhattan             True        40          63
+    zero (h=0)            True        40          63
+    euclidean             True        40          63
+    manhattan x2          True        40          67
+    h=0 removes the heuristic (A* degrades to uniform-cost search);
+    euclidean is a weaker admissible lower bound; manhattan x2 is
+    inadmissible (too aggressive) and expands more states.

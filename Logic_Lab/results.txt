@@ -1,0 +1,43 @@
+======================================================================
+LOGICAL PLANNING - warehouse robot  (Logic + Search = Planning)
+Pranay Ghumatkar  |  2024A3PS0328G
+======================================================================
+
+--- Task 0: the planning problem (I, A, G) ---
+    Initial state I : ['At(Package,A)', 'At(Robot,A)']
+    Goal G          : ['At(Package,C)']
+    Actions A       : 10 actions
+      Move(A,B)              pre ['At(Robot,A)']
+      Move(B,A)              pre ['At(Robot,B)']
+      Move(B,C)              pre ['At(Robot,B)']
+      Move(C,B)              pre ['At(Robot,C)']
+      PickUp(Package,A)      pre ['At(Package,A)', 'At(Robot,A)']
+      Drop(Package,A)        pre ['At(Robot,A)', 'Holding(Package)']
+      PickUp(Package,B)      pre ['At(Package,B)', 'At(Robot,B)']
+      Drop(Package,B)        pre ['At(Robot,B)', 'Holding(Package)']
+      PickUp(Package,C)      pre ['At(Package,C)', 'At(Robot,C)']
+      Drop(Package,C)        pre ['At(Robot,C)', 'Holding(Package)']
+
+--- Task 1: plan constructed by hand ---
+    S0: At(Package,A), At(Robot,A)
+    S1 (after PickUp(Package,A)): At(Robot,A), Holding(Package)
+    S2 (after Move(A,B)): At(Robot,B), Holding(Package)
+    S3 (after Move(B,C)): At(Robot,C), Holding(Package)
+    S4 (after Drop(Package,C)): At(Package,C), At(Robot,C)
+    hand plan valid : True
+
+--- Task 2/3: BFS planner on the original problem (Test A) ---
+    plan found      : True
+    plan            : PickUp(Package,A) -> Move(A,B) -> Move(B,C) -> Drop(Package,C)
+    plan length     : 4
+    states expanded : 7
+    plan valid      : True
+
+--- Test B: impossible problem (remove PickUp) ---
+    plan found      : False  (expected: no plan found)
+    states expanded : 3
+
+--- Test C: irrelevant moves do not move the package ---
+    goal At(Package,C) with moves only : False  (expected: no)
+    goal At(Robot,C)   with moves only : True  (expected: yes)
+    the robot reaching C is NOT treated as the package reaching C

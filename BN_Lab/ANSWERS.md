@@ -4,7 +4,7 @@
 **Roll No:** 2024A3PS0328G
 
 This document answers Questions 1–14 of the worksheet. All numbers quoted
-below are produced by the programs in this folder and stored in `results/`.
+below are produced by the programs in this folder and recorded in `results.txt`.
 
 ---
 
@@ -77,8 +77,7 @@ Built from the six-sentence dataset (each sentence wrapped in `<START>`/`<END>`)
 | park  | `<END>` | 1.0000 |
 | `<START>` | the | 1.0000 |
 
-(Full machine-generated table: `results/first_order_report.txt`. The same
-contexts computed as counts by `tests/test_normalisation.py`.)
+(Full machine-generated tables are in `results.txt`.)
 
 **Zero-probability transitions.** With maximum-likelihood counting, every row is
 sparse. For example:
@@ -144,7 +143,7 @@ The difference is behavioural and important:
 - Greedy is **deterministic**. Re-running it gives identical output. Because the
   argmax chain in this corpus is `the → cat → sat → on → the → …`, greedy never
   reaches `<END>` and gets trapped in the cycle
-  `"the cat sat on the cat sat on …"` (see `results/generated_first_order_modes.txt`).
+  `"the cat sat on the cat sat on …"` (see `results.txt`).
 - Sampling is **stochastic**. Different samples follow different plausible paths,
   so `<END>` is eventually reached and a variety of sentences is produced.
 
@@ -186,7 +185,7 @@ implementation has gone wrong, for example:
 
 Since every proper conditional distribution must satisfy `Σ_v P(v | w) = 1`,
 the correct program's rows all print `1.000000` (see
-`results/normalisation_first_order.txt` and `normalisation_second_order.txt`).
+`results.txt`).
 A 0.87 row is a concrete, detectable bug — this is why the invariant test is a
 useful part of validating an LLM-generated implementation.
 
@@ -222,7 +221,7 @@ The lesson: agreement on easy, high-frequency patterns does not imply the model
 
 ## Question 10 — Greedy vs sampling: which produces more variation? Why?
 
-**Sampling produces far more variation.** In `results/generated_first_order_modes.txt`:
+**Sampling produces far more variation.** In `results.txt`:
 
 - **Mode A (greedy, 5 sentences):** all five outputs are the identical cycle
   `the cat sat on the cat sat on …` (it never emits `<END>`, so it runs to the
@@ -332,3 +331,36 @@ Thinking of the model as a Bayesian network gave, among others:
 The Bayesian-network view separates the *probabilistic question*
 `P(next token | previous tokens)` from the *engineering machinery* that estimates
 it — a distinction that carries straight over to modern neural language models.
+
+---
+
+## Reflection — how the LLM was used and how its output was validated
+
+**Workflow.** Understand → design → ask the LLM → implement → test → reflect. I
+wrote down the variables, dependencies and the distribution to be estimated
+before prompting, and used that specification as the test oracle.
+
+**Validation.** (1) Read the generated code against the spec (where counts are
+stored, where `P(X_t|·)` is computed, how the next word is chosen). (2) Tested
+probabilistic invariants — `Σ_v P(v|w) = 1` for every row, all probabilities in
+`[0,1]`, greedy determinism. (3) Ran the model end-to-end and inspected the
+generated sentences rather than trusting one number.
+
+**A concrete bug the LLM omitted.** Generation seeds the second-order model with
+`(<START>, <START>)`, but `<START>` never occurred as the *second* element of a
+triple, so the back-off row was missing and every generation stopped at the first
+step. The fix was to prepend **two** `<START>` tokens in the tokeniser. The
+normalisation test passed throughout — only running the model exposed the
+boundary condition.
+
+**A second correction.** The worksheet's illustrative `P(cat|the)=3/5` comes from
+a five-transition toy corpus, not the six-sentence dataset; on the real data
+`the` is a context 12 times, so `P(cat|the)=3/12`. Tests must be written against
+the actual data, not a figure quoted in the prompt.
+
+**LLM strengths and limits.** Good at boilerplate — tokenisation, `Counter`
+counting, normalisation, weighted sampling and the greedy/sampling switch. Not
+good at boundary conditions or at judging whether the *model* is appropriate.
+The LLM constructs the system; understanding — what distribution is estimated,
+which invariants it must satisfy, where the edge cases are — is what makes
+validation possible.
